@@ -1,9 +1,11 @@
-from meme_creation import secrets
 from meme_creation import meme_variants_config
 from meme_creation import llm_service
 import requests
 from google.cloud import firestore
 
+NEWS_API_KEY = ''
+MEME_CREATOR_API_USERNAME = ''
+MEME_CREATOR_API_PASSWORD = ''
 
 def caption_meme(template_id, username, password, text0, text1, text2, font=None):
     url = "https://api.imgflip.com/caption_image"
@@ -33,7 +35,7 @@ def create_batch_of_memes(recipe):
   if recipe_news_source == "news_api":
     from newsapi import NewsApiClient
     # Initialize the News API client with your API key
-    news_source_api = NewsApiClient(api_key=secrets.NEWS_API_KEY)
+    news_source_api = NewsApiClient(api_key=NEWS_API_KEY)
   else:
       return
 
@@ -53,6 +55,6 @@ def create_batch_of_memes(recipe):
     for meme in meme_variants:  # one meme per article, for now
       article_url_content = requests.get(url).content
       caption_list = llm_service.prompt(headline, article_url_contents, meme, recipe_personality_prompt, recipe_llm)
-      captioned_meme_url = caption_meme(meme['id'], secrets.MEME_CREATOR_API_USERNAME, secrets.MEME_CREATOR_API_PASSWORD, *caption_list)
+      captioned_meme_url = caption_meme(meme['id'], MEME_CREATOR_API_USERNAME, MEME_CREATOR_API_PASSWORD, *caption_list)
       captioned_meme_urls.append(captioned_meme_url)
   print(captioned_meme_urls)

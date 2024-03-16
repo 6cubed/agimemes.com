@@ -1,3 +1,4 @@
 newsapi-python
 requests
 flask
+firebase_admin

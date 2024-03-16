@@ -38,34 +38,11 @@
 </head>
 <body>
   <div class="meme-container">
-    <script>
-      // Data for memes (replace with your actual data)
-      const memes = [
-        { id: 1, imageUrl: "https://i.imgflip.com/8ja5so.jpg" },
-        { id: 2, imageUrl: "https://i.imgflip.com/8j8msk.gif" },
-        { id: 3, imageUrl: "https://i.imgflip.com/8j9aq5.jpg" },
-        { id: 4, imageUrl: "https://i.imgflip.com/8j4j8l.gif" },
-        { id: 5, imageUrl: "https://i.imgflip.com/8jcel0.jpg" },
-        { id: 6, imageUrl: "https://i.imgflip.com/8jbbtn.jpg" },
-        { id: 7, imageUrl: "https://i.imgflip.com/8jhb8a.jpg" },
-        { id: 8, imageUrl: "https://i.imgflip.com/8jhba2.jpg" },
-        { id: 9, imageUrl: "https://i.imgflip.com/8jhbbw.jpg" },
-        { id: 10, imageUrl: "https://i.imgflip.com/8jhbfw.jpg" },
-      ];
-      const placeholderImageUrl = "https://example.com/no-meme.jpg";
-
-    memes.forEach(meme => {
-      const imageUrl = meme.imageUrl || placeholderImageUrl;
-      const tile = document.createElement('div');
-      tile.classList.add('meme-tile');
-
-      const image = document.createElement('img');
-      image.src = imageUrl;
-      image.alt = 'Meme';
-      tile.appendChild(image);
-      document.querySelector('.meme-container').appendChild(tile);
-    });
-</script>
-</div>
+    {% for meme in memes %}
+      <div class="meme-tile">
+        <img src="{{ meme.imageUrl or placeholder_image_url }}" alt="Meme">
+      </div>
+    {% endfor %}
+  </div>
 </body>
 </html>
