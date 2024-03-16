@@ -3,48 +3,69 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Meme Gallery</title>
+  <title>AGI Memes</title>
   <style>
-    /* Centering the image gallery */
-    .gallery {
+    .meme-container {
       display: flex;
       flex-wrap: wrap;
-      justify-content: center;
-      margin: 20px auto;
+      width: fit-content; /* Adjust width as needed */
     }
-    
-    /* Styling for each image container */
-    .image-container {
-      margin: 10px;
-      position: relative;
+
+    .meme-tile {
+      margin: 5px;
+      width: calc(20% - 10px); /* Adjust dimensions as needed */
     }
-    
-    /* Styling for the image */
-    img {
-      width: 200px;
-      height: 200px;
-      object-fit: cover;
+
+    .meme-tile img {
+      width: 100%;
+      height: auto;
     }
-    
-    /* Button styling */
-    .download-btn {
-      position: absolute;
-      bottom: 5px;
-      right: 5px;
-      padding: 5px 10px;
+
+    .meme-download {
       background-color: #007bff;
       color: white;
+      padding: 5px 10px;
       border: none;
+      border-radius: 5px;
       cursor: pointer;
+      margin-top: 5px;
+    }
+
+    .meme-download:hover {
+      background-color: #0062cc;
     }
   </style>
 </head>
 <body>
-  <div class="gallery">
-    <div class="image-container">
-      <img src="https://i.imgflip.com/8ja5so.jpg" alt="Meme Image">
-      <button class="download-btn">Download Meme</button>
-    </div>
-    </div>
+  <div class="meme-container">
+    <script>
+      // Data for memes (replace with your actual data)
+      const memes = [
+        { id: 1, imageUrl: "https://i.imgflip.com/8ja5so.jpg" },
+        { id: 2, imageUrl: "https://i.imgflip.com/8j8msk.gif" },
+        { id: 3, imageUrl: "https://i.imgflip.com/8j9aq5.jpg" },
+        { id: 4, imageUrl: "https://i.imgflip.com/8j4j8l.gif" },
+        { id: 5, imageUrl: "https://i.imgflip.com/8jcel0.jpg" },
+        { id: 6, imageUrl: "https://i.imgflip.com/8jbbtn.jpg" },
+        { id: 7, imageUrl: "https://i.imgflip.com/8jhb8a.jpg" },
+        { id: 8, imageUrl: "https://i.imgflip.com/8jhba2.jpg" },
+        { id: 9, imageUrl: "https://i.imgflip.com/8jhbbw.jpg" },
+        { id: 10, imageUrl: "https://i.imgflip.com/8jhbfw.jpg" },
+      ];
+      const placeholderImageUrl = "https://example.com/no-meme.jpg";
+
+    memes.forEach(meme => {
+      const imageUrl = meme.imageUrl || placeholderImageUrl;
+      const tile = document.createElement('div');
+      tile.classList.add('meme-tile');
+
+      const image = document.createElement('img');
+      image.src = imageUrl;
+      image.alt = 'Meme';
+      tile.appendChild(image);
+      document.querySelector('.meme-container').appendChild(tile);
+    });
+</script>
+</div>
 </body>
 </html>

@@ -1,5 +1,6 @@
 from flask import Flask, render_template, jsonify
 import os
+from meme_creation import create_batch_of_memes
 
 app = Flask(__name__)
 app.debug = True

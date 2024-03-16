@@ -1,8 +1,8 @@
 from meme_creation import secrets
-from meme_creation import personality_prompts
 from meme_creation import meme_variants_config
 from meme_creation import llm_service
 import requests
+from google.cloud import firestore
 
 
 def caption_meme(template_id, username, password, text0, text1, text2, font=None):
