@@ -1,7 +1,8 @@
-from meme_creation import meme_variants_config
 from meme_creation import llm_service
+from meme_creation import meme_variants_config
 import requests
-from google.cloud import firestore
+import api_secrets
+import json
 
 NEWS_API_KEY = ''
 MEME_CREATOR_API_USERNAME = ''
@@ -31,30 +32,26 @@ def caption_meme(template_id, username, password, text0, text1, text2, font=None
         return "Failed to connect to the API."
 
 def create_batch_of_memes(recipe):
-  recipe_news_source = recipe['news_source']
-  if recipe_news_source == "news_api":
-    from newsapi import NewsApiClient
-    # Initialize the News API client with your API key
-    news_source_api = NewsApiClient(api_key=NEWS_API_KEY)
-  else:
-      return
+    article_response = requests.get('https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=%s' % (api_secrets.NEWS_API_KEY))
+    article_objects = json.loads(article_response.content)['articles']
+    articles = {}
+    for article_object in article_objects:
+        title = article_object['title']
+        description = article_object['description']
+        articles[title] = description
+    
+    personality = recipe['personality']
 
-  top_headlines = newsapi.get_top_headlines(language='en')
-
-  articles = {}
-  
-  # Print the headlines
-  for article in top_headlines['articles']:
-      articles[article['title']] = article['url']
-
-  recipe_llm = recipe['llm']
-  recipe_personality_prompt = recipe['personality_prompt']
-
-  captioned_meme_urls = []
-  for healine, url in articles.items():
-    for meme in meme_variants:  # one meme per article, for now
-      article_url_content = requests.get(url).content
-      caption_list = llm_service.prompt(headline, article_url_contents, meme, recipe_personality_prompt, recipe_llm)
-      captioned_meme_url = caption_meme(meme['id'], MEME_CREATOR_API_USERNAME, MEME_CREATOR_API_PASSWORD, *caption_list)
-      captioned_meme_urls.append(captioned_meme_url)
-  print(captioned_meme_urls)
+    captioned_meme_urls = []
+    for headline, article_summary in articles.items():
+        for meme_object in meme_variants_config.MEME_VARIANTS:  # one meme per article, for now
+            prompt = llm_service.prepare_prompt(headline, article_summary, meme_object, personality)
+            llm_response = llm_service.call_llm(prompt)
+            caption_list_first_meme = eval(llm_response['choices'][0]['message']['content'])
+            captioned_meme_url = caption_meme(
+                meme_object['id'],
+                api_secrets.IMGFLIP_USERNAME, 
+                api_secrets.IMGFLIP_PASSWORD, 
+                *caption_list_first_meme)
+            captioned_meme_urls.append(captioned_meme_url)
+    return(captioned_meme_urls)

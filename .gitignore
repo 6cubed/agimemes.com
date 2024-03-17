@@ -1,1 +1,3 @@
 gae_app/serviceaccount.json
+gae_app/api_secrets.py
+*__pycache__*

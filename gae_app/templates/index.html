@@ -8,12 +8,12 @@
     .meme-container {
       display: flex;
       flex-wrap: wrap;
-      width: fit-content; /* Adjust width as needed */
+      width: fit-content;
     }
 
     .meme-tile {
       margin: 5px;
-      width: calc(20% - 10px); /* Adjust dimensions as needed */
+      width: calc(20% - 10px);
     }
 
     .meme-tile img {
@@ -40,7 +40,7 @@
   <div class="meme-container">
     {% for meme in memes %}
       <div class="meme-tile">
-        <img src="{{ meme.imageUrl or placeholder_image_url }}" alt="Meme">
+        <img src="{{ meme.imageUrl }}" alt="Meme">
       </div>
     {% endfor %}
   </div>
