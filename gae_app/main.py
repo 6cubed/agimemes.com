@@ -34,11 +34,12 @@ def meme_creation():
     meme_batch = create_batch_of_memes.create_batch_of_memes(creation_recipe_configs.MINSTRAL_WITTY_RECIPE)
     memes_ref = db.collection('memes')
 
-    for meme, prompt in meme_batch:
+    for meme, prompt, llm_model in meme_batch:
       meme_doc = {
         'imageUrl': meme,
         'prompt': prompt,
-        'creation_time': datetime.datetime.utcnow()
+        'creation_time': datetime.datetime.utcnow(),
+        'llmModel': llm_model,
       }
       memes_ref.add(meme_doc)
     return 'creating memes'
@@ -50,14 +51,6 @@ def index():
     'index.html', 
     memes=memes)
 
-@app.route('/config.json')
-def config():
-    return jsonify(
-      {
-        "news_api_key": os.getenv("NEWS_API_KEY"),
-        "imgflip_username": os.getenv("IMG_FLIP_USERNAME"),
-        "imgflip_pasword": os.getenv("IMG_FLIP_PASSWORD"),
-      })
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -51,13 +51,24 @@
     .meme-download:hover {
       background-color: #0062cc;
     }
+
+    .meme-badge {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      padding: 5px 10px;
+      background-color: #ddd;
+      color: black;
+      font-size: 0.8em;
+      border-radius: 5px;
+    }
   </style>
 </head>
 <body>
   <div class="meme-container">
     {% for meme in memes %}
       <div class="meme-tile">
-        <img src="{{ meme.imageUrl }}" alt="Meme">
+        <div class="meme-badge">{{ meme.llmModel }}</div> <img src="{{ meme.imageUrl }}" alt="Meme">
         <div class="meme-prompt">{{ meme.prompt }}</div> </div>
     {% endfor %}
   </div>
