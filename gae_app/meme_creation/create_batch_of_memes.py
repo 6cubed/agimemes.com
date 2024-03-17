@@ -9,7 +9,7 @@ NEWS_API_KEY = ''
 MEME_CREATOR_API_USERNAME = ''
 MEME_CREATOR_API_PASSWORD = ''
 
-def caption_meme(template_id, username, password, text0, text1, text2, font=None):
+def caption_meme(template_id, username, password, text0, text1=None, text2=None, text3=None, text4=None, font=None):
     url = "https://api.imgflip.com/caption_image"
     payload = {
         'template_id': template_id,
@@ -18,6 +18,8 @@ def caption_meme(template_id, username, password, text0, text1, text2, font=None
         'boxes[0][text]': text0,
         'boxes[1][text]': text1,
         'boxes[2][text]': text2,
+        'boxes[3][text]': text3,
+        'boxes[4][text]': text4,
     }
     if font:
         payload['font'] = font

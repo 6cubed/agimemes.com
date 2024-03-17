@@ -6,6 +6,10 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 from meme_creation import create_batch_of_memes
 from meme_creation import creation_recipe_configs
+import time
+from cachetools import cached
+from cachetools import TTLCache
+import datetime
 
 cred = credentials.Certificate('./serviceaccount.json')
 firebase_admin.initialize_app(cred)
@@ -14,15 +18,11 @@ db = firestore.client()
 app = Flask(__name__)
 app.debug = True
 
-_MEMES = []  # ttlcache one hour here...
-
-placeholder_image_url = "https://example.com/no-meme.jpg"
-
+@cached(cache=TTLCache(maxsize=1024, ttl=3500)) # < 1 hour
 def get_recent_memes():
-  if _MEMES:
-    return _MEMES
   memes_ref = db.collection('memes')
-  docs = memes_ref.get()
+  query = memes_ref.order_by('creation_time').limit(100)
+  docs = query.get()
   memes_data = []
   for doc in docs:
       memes_data.append(doc.to_dict())
@@ -38,6 +38,7 @@ def meme_creation():
       meme_doc = {
         'imageUrl': meme,
         'prompt': prompt,
+        'creation_time': datetime.datetime.utcnow()
       }
       memes_ref.add(meme_doc)
     return 'creating memes'
