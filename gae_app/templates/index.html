@@ -14,11 +14,28 @@
     .meme-tile {
       margin: 5px;
       width: calc(20% - 10px);
+      position: relative; /* Needed for hover element positioning */
     }
 
     .meme-tile img {
       width: 100%;
       height: auto;
+    }
+
+    .meme-prompt {
+      position: absolute; /* Position the prompt element absolutely */
+      bottom: 0; /* Place it at the bottom */
+      left: 0; /* Align it to the left */
+      width: 100%; /* Span the full width of the tile */
+      background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+      color: white; /* White text */
+      padding: 10px; /* Padding for readability */
+      opacity: 0; /* Initially hidden */
+      transition: opacity 0.2s ease-in-out; /* Smooth fade in/out on hover */
+    }
+
+    .meme-tile:hover .meme-prompt {
+      opacity: 1; /* Show prompt on hover */
     }
 
     .meme-download {
@@ -41,7 +58,7 @@
     {% for meme in memes %}
       <div class="meme-tile">
         <img src="{{ meme.imageUrl }}" alt="Meme">
-      </div>
+        <div class="meme-prompt">{{ meme.prompt }}</div> </div>
     {% endfor %}
   </div>
 </body>

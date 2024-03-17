@@ -3,6 +3,7 @@ from meme_creation import meme_variants_config
 import requests
 import api_secrets
 import json
+import random 
 
 NEWS_API_KEY = ''
 MEME_CREATOR_API_USERNAME = ''
@@ -35,7 +36,7 @@ def create_batch_of_memes(recipe):
     article_response = requests.get('https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=%s' % (api_secrets.NEWS_API_KEY))
     article_objects = json.loads(article_response.content)['articles']
     articles = {}
-    for article_object in article_objects:
+    for article_object in random.sample(article_objects, 10):
         title = article_object['title']
         description = article_object['description']
         articles[title] = description
@@ -44,14 +45,17 @@ def create_batch_of_memes(recipe):
 
     captioned_meme_urls = []
     for headline, article_summary in articles.items():
-        for meme_object in meme_variants_config.MEME_VARIANTS:  # one meme per article, for now
+        for meme_object in random.sample(meme_variants_config.MEME_VARIANTS, 10):  # 10 memes * 10 articles
             prompt = llm_service.prepare_prompt(headline, article_summary, meme_object, personality)
-            llm_response = llm_service.call_llm(prompt)
-            caption_list_first_meme = eval(llm_response['choices'][0]['message']['content'])
-            captioned_meme_url = caption_meme(
-                meme_object['id'],
-                api_secrets.IMGFLIP_USERNAME, 
-                api_secrets.IMGFLIP_PASSWORD, 
-                *caption_list_first_meme)
-            captioned_meme_urls.append(captioned_meme_url)
+            try:
+                llm_response = llm_service.call_llm(prompt)
+                caption_list_first_meme = eval(llm_response['choices'][0]['message']['content'])
+                captioned_meme_url = caption_meme(
+                    meme_object['id'],
+                    api_secrets.IMGFLIP_USERNAME, 
+                    api_secrets.IMGFLIP_PASSWORD, 
+                    *caption_list_first_meme)
+                captioned_meme_urls.append((captioned_meme_url, prompt))
+            except:
+                pass
     return(captioned_meme_urls)

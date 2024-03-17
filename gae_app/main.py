@@ -34,9 +34,10 @@ def meme_creation():
     meme_batch = create_batch_of_memes.create_batch_of_memes(creation_recipe_configs.MINSTRAL_WITTY_RECIPE)
     memes_ref = db.collection('memes')
 
-    for meme in meme_batch:
+    for meme, prompt in meme_batch:
       meme_doc = {
         'imageUrl': meme,
+        'prompt': prompt,
       }
       memes_ref.add(meme_doc)
     return 'creating memes'
