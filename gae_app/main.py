@@ -21,11 +21,12 @@ app.debug = True
 @cached(cache=TTLCache(maxsize=1024, ttl=3500)) # < 1 hour
 def get_recent_memes():
   memes_ref = db.collection('memes')
-  query = memes_ref.order_by('creation_time').limit(100)
+  query = memes_ref.order_by('creation_time', direction=firestore.Query.DESCENDING).limit(100)
   docs = query.get()
   memes_data = []
   for doc in docs:
       memes_data.append(doc.to_dict())
+      print(doc.to_dict()['creation_time'])
   return memes_data
 
 

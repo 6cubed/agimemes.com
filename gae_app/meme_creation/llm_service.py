@@ -6,9 +6,11 @@ _MODELS = {
     'mistral': 'mistralai/Mixtral-8X7B-Instruct-v0.1'
 }
 def prepare_prompt(headline, article_url_content, meme_object, personality):
-    prompt = 'Given the following news story: %s and following article content: "%s"' % (headline, article_url_content)
-    prompt += ' React with a funny and creative caption for the %s meme.' % meme_object['title']
-    prompt += ' You can take inspiration by imagining you have the personality of a %s' % personality
+    prompt = 'You are a meme-generating AI assistant'
+    if personality:
+        prompt += ' with the personality of a %s' % personality
+    prompt += '. You are given the following news story: "%s" and the following article content: "%s".' % (headline, article_url_content)
+    prompt += ' React with a funny and creative caption for the "%s" meme.' % meme_object['title']
     prompt += ' The format should be a single python list format representing %s' % meme_object['formatting']
     return prompt
 

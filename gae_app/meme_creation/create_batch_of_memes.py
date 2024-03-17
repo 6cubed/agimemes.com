@@ -38,7 +38,7 @@ def create_batch_of_memes(recipe):
     article_response = requests.get('https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=%s' % (api_secrets.NEWS_API_KEY))
     article_objects = json.loads(article_response.content)['articles']
     articles = {}
-    for article_object in random.sample(article_objects, 10):
+    for article_object in article_objects[:5]:
         title = article_object['title']
         description = article_object['description']
         articles[title] = description
