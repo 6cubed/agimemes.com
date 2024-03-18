@@ -5,39 +5,89 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AGI Memes</title>
   <style>
+    /* Base styles */
+    body {
+      font-family: sans-serif; /* Choose a modern font family */
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Container for memes */
     .meme-container {
       display: flex;
       flex-wrap: wrap;
-      width: fit-content;
+      margin: 20px auto; /* Add some margin for aesthetics */
+      max-width: 800px; /* Set a maximum container width */
     }
 
+    /* Meme tile styles */
     .meme-tile {
-      margin: 5px;
-      width: calc(20% - 10px);
-      position: relative; /* Needed for hover element positioning */
+      margin: 10px;
+      background-color: #f5f5f5; /* Light gray background */
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+      border-radius: 5px; /* Rounded corners */
+      overflow: hidden; /* Prevent image overflow */
+      position: relative; /* Needed for hover effects */
     }
 
     .meme-tile img {
       width: 100%;
-      height: auto;
+      height: auto; /* Maintain image aspect ratio */
     }
 
+    /* Responsive layout adjustments */
+    @media (max-width: 768px) {
+      .meme-tile {
+        width: 50%; /* Two columns on smaller screens */
+      }
+    }
+
+    /* Desktop layout (one meme per row) */
+    @media (min-width: 769px) {
+      .meme-container {
+        justify-content: space-between; /* Evenly distribute memes horizontally */
+      }
+
+      .meme-tile {
+        flex: 0 0 30%; /* Fixed width for three columns on desktop */
+      }
+    }
+
+    /* Meme prompt styles */
     .meme-prompt {
-      position: absolute; /* Position the prompt element absolutely */
-      bottom: 0; /* Place it at the bottom */
-      left: 0; /* Align it to the left */
-      width: 100%; /* Span the full width of the tile */
-      background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 10px;
+      font-size: 8px;
       color: white; /* White text */
-      padding: 10px; /* Padding for readability */
-      opacity: 0; /* Initially hidden */
-      transition: opacity 0.2s ease-in-out; /* Smooth fade in/out on hover */
+      background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
+      opacity: 0;
+      transition: opacity 0.2s ease-in-out;
     }
 
     .meme-tile:hover .meme-prompt {
       opacity: 1; /* Show prompt on hover */
     }
 
+    .creation-time {
+      font-size: 0.8em; /* Slightly smaller font for creation time */
+    }
+
+    /* LLM model badge styles (optional) */
+    .meme-badge {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      padding: 5px 10px;
+      background-color: #ddd;
+      color: black;
+      font-size: 0.8em;
+      border-radius: 5px;
+    }
+
+    /* Download button styles (optional, add your own design) */
     .meme-download {
       background-color: #007bff;
       color: white;
@@ -51,26 +101,19 @@
     .meme-download:hover {
       background-color: #0062cc;
     }
-
-    .meme-badge {
-      position: absolute;
-      top: 5px;
-      right: 5px;
-      padding: 5px 10px;
-      background-color: #ddd;
-      color: black;
-      font-size: 0.8em;
-      border-radius: 5px;
-    }
   </style>
 </head>
 <body>
   <div class="meme-container">
     {% for meme in memes %}
       <div class="meme-tile">
-        <div class="meme-badge">{{ meme.llmModel }}</div> <img src="{{ meme.imageUrl }}" alt="Meme">
-        <div class="meme-prompt">{{ meme.prompt }}</div> </div>
+        <div class="meme-badge">{{ meme.llmModel }}</div>
+        <img src="{{ meme.imageUrl }}" alt="Meme">
+        <div class="meme-prompt">
+          {{ meme.prompt }}<br>
+          <span class="creation-time">Created: {{ meme.creationTime.strftime("%Y-%m-%d %H:%M:%S") }}</span>
+        </div>
+      </div>
     {% endfor %}
   </div>
 </body>
-</html>

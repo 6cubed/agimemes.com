@@ -1,9 +1,20 @@
-AGI-generated Memes.
+AGI-generated meme timeline.
 
-# Prompts
+# Prompting
+## Personality-based prompting.
+## Chain-of-thought.
 
 # Models
+## Mistral
+## ChatGPT
+## Fine-tuned ChatGPT
+## Grok
+## Mistral Neets fork
 
 # Memes
+## Imgflip static list
+## Automatic template tweaking (meme adaptation)
 
-# Benchmarks
+# Benchmarks / tracked metrics
+## Social shares per meme created
+## Prompt health (creations per attempted)

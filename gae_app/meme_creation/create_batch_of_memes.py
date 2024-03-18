@@ -44,14 +44,14 @@ def create_batch_of_memes(recipe):
         articles[title] = description
     
     personality = recipe['personality']
-    llm_model = recipe['llm']
+    llm_model = random.choice(recipe['llm'])
 
     captioned_meme_urls = []
     for headline, article_summary in articles.items():
         for meme_object in random.sample(meme_variants_config.MEME_VARIANTS, 2):  # 2 memes * 10 articles
             prompt = llm_service.prepare_prompt(headline, article_summary, meme_object, personality)
             try:
-                llm_response = llm_service.call_llm(prompt)
+                llm_response = llm_service.call_llm(prompt, llm_model)
                 caption_list_first_meme = eval(llm_response['choices'][0]['message']['content'])
                 captioned_meme_url = caption_meme(
                     meme_object['id'],

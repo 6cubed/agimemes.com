@@ -3,8 +3,10 @@ import api_secrets
 
 _NEETS_API_URL = "https://api.neets.ai/v1/chat/completions"
 _MODELS = {
-    'mistral': 'mistralai/Mixtral-8X7B-Instruct-v0.1'
+    'mistral': 'mistralai/Mixtral-8X7B-Instruct-v0.1',
+    'neets.ai': 'Neets-7B',
 }
+
 def prepare_prompt(headline, article_url_content, meme_object, personality):
     prompt = 'You are a meme-generating AI assistant'
     if personality:
@@ -14,7 +16,7 @@ def prepare_prompt(headline, article_url_content, meme_object, personality):
     prompt += ' The format should be a single python list format representing %s' % meme_object['formatting']
     return prompt
 
-def call_llm(prompt):
+def call_llm(prompt, llm_model):
   payload = {
       "messages": [
           {
@@ -22,7 +24,7 @@ def call_llm(prompt):
               "content": prompt
           }
       ],
-      "model": _MODELS['mistral']
+      "model": _MODELS[llm_model]
   }
 
   headers = {
