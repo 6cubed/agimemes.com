@@ -5,6 +5,8 @@ import requests
 import api_secrets
 import json
 import random 
+import traceback
+import sys
 
 _NEWS_SOURCES = {
     'newsapi_techcrunch': 'https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=%s' % (api_secrets.NEWS_API_KEY),
@@ -47,17 +49,18 @@ def create_batch_of_memes(recipe):
         title = article_object['title']
         description = article_object['description']
         articles[title] = description
-    
+
     personality = recipe['personality']
 
     captioned_meme_urls = []
     for headline, article_summary in articles.items():
         for meme_object in random.sample(meme_variants_config.MEME_VARIANTS, 2):  # 2 memes * 10 articles
             prompt = llm_service.prepare_prompt(headline, article_summary, meme_object, personality)
+            llm_model = random.choice(recipe['llm'])
+            llm_response = llm_service.call_llm(prompt, llm_model)
             try:
-                llm_model = random.choice(recipe['llm'])
-                llm_response = llm_service.call_llm(prompt, llm_model)
-                caption_list_first_meme = ast.literal_eval(llm_response['choices'][0]['message']['content'])
+                caption_list_first_meme = eval(llm_response['choices'][0]['message']['content'])
+                print(caption_list_first_meme)
                 if len(caption_list_first_meme) != meme_object['box_count']:
                     print('Meme LLM response caption count did not match the intended numnber of captions for this meme.')
                     continue
@@ -67,6 +70,7 @@ def create_batch_of_memes(recipe):
                     api_secrets.IMGFLIP_PASSWORD, 
                     *caption_list_first_meme)
                 captioned_meme_urls.append((captioned_meme_url, prompt, llm_model))
-            except:
-                pass
+            except Exception:
+                print(traceback.format_exc())
+
     return(captioned_meme_urls)
