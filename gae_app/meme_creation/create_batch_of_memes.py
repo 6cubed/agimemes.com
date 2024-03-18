@@ -1,13 +1,16 @@
 from meme_creation import llm_service
 from meme_creation import meme_variants_config
+import ast
 import requests
 import api_secrets
 import json
 import random 
 
-NEWS_API_KEY = ''
-MEME_CREATOR_API_USERNAME = ''
-MEME_CREATOR_API_PASSWORD = ''
+_NEWS_SOURCES = {
+    'newsapi_techcrunch': 'https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=%s' % (api_secrets.NEWS_API_KEY),
+    'newsapi_ai': 'https://newsapi.org/v2/everything?q=Artificial Intelligence&from=2024-02-18&sortBy=publishedAt&apiKey=%s' % (api_secrets.NEWS_API_KEY),
+    'newsapi_business_us': 'https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=%s' % (api_secrets.NEWS_API_KEY)
+}
 
 def caption_meme(template_id, username, password, text0, text1=None, text2=None, text3=None, text4=None, font=None):
     url = "https://api.imgflip.com/caption_image"
@@ -35,7 +38,9 @@ def caption_meme(template_id, username, password, text0, text1=None, text2=None,
         return "Failed to connect to the API."
 
 def create_batch_of_memes(recipe):
-    article_response = requests.get('https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=%s' % (api_secrets.NEWS_API_KEY))
+    news_source_recipe = random.choice(recipe['news_source'])
+    news_source_api = _NEWS_SOURCES[news_source_recipe]
+    article_response = requests.get(news_source_api)
     article_objects = json.loads(article_response.content)['articles']
     articles = {}
     for article_object in article_objects[:5]:
@@ -44,15 +49,18 @@ def create_batch_of_memes(recipe):
         articles[title] = description
     
     personality = recipe['personality']
-    llm_model = random.choice(recipe['llm'])
 
     captioned_meme_urls = []
     for headline, article_summary in articles.items():
         for meme_object in random.sample(meme_variants_config.MEME_VARIANTS, 2):  # 2 memes * 10 articles
             prompt = llm_service.prepare_prompt(headline, article_summary, meme_object, personality)
             try:
+                llm_model = random.choice(recipe['llm'])
                 llm_response = llm_service.call_llm(prompt, llm_model)
-                caption_list_first_meme = eval(llm_response['choices'][0]['message']['content'])
+                caption_list_first_meme = ast.literal_eval(llm_response['choices'][0]['message']['content'])
+                if len(caption_list_first_meme) != meme_object['box_count']:
+                    print('Meme LLM response caption count did not match the intended numnber of captions for this meme.')
+                    continue
                 captioned_meme_url = caption_meme(
                     meme_object['id'],
                     api_secrets.IMGFLIP_USERNAME, 

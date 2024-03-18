@@ -11,9 +11,10 @@ def prepare_prompt(headline, article_url_content, meme_object, personality):
     prompt = 'You are a meme-generating AI assistant'
     if personality:
         prompt += ' with the personality of a %s' % personality
-    prompt += '. You are given the following news story: "%s" and the following article content: "%s".' % (headline, article_url_content)
-    prompt += ' React with a funny and creative caption for the "%s" meme.' % meme_object['title']
-    prompt += ' The format should be a single python list format representing %s' % meme_object['formatting']
+    prompt += ' You will be tasked with creating a funny and creative caption for the "%s" meme.' % meme_object['title']
+    prompt += ' Let me explain what kind of captions make this meme funny. %s' % meme_object['explanation']
+    prompt += ' You are given the following news story: "%s" and the following article content: "%s".' % (headline, article_url_content)
+    prompt += ' Write the meme caption(s). The format of your response should be a single python list. The elements of the list correspond to the %s' % meme_object['formatting']
     return prompt
 
 def call_llm(prompt, llm_model):

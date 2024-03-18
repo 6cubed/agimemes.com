@@ -4,6 +4,10 @@ AGI-generated meme timeline.
 ## Personality-based prompting.
 ## Chain-of-thought.
 
+# Fresh information sources.
+## News API
+## Twitter
+
 # Models
 ## Mistral
 ## ChatGPT
@@ -18,3 +22,6 @@ AGI-generated meme timeline.
 # Benchmarks / tracked metrics
 ## Social shares per meme created
 ## Prompt health (creations per attempted)
+## % manually reviewed "Good memes"
+
+No unit tests please.
