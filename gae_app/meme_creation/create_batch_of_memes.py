@@ -70,6 +70,7 @@ def create_batch_of_memes(recipe):
                     api_secrets.IMGFLIP_PASSWORD, 
                     *caption_list_first_meme)
                 captioned_meme_urls.append((captioned_meme_url, prompt, llm_model))
+                print('Meme successfully created')
             except Exception:
                 print(traceback.format_exc())
 

@@ -15,7 +15,7 @@ def prepare_prompt(headline, article_url_content, meme_object, personality):
     prompt += ' Let me explain what kind of captions make this meme funny. %s' % meme_object['explanation']
     prompt += ' You are given the following news story: "%s" and the following article content: "%s".' % (headline, article_url_content)
     prompt += ' Write the meme caption(s). The format of your response should be a single python list ONLY. The elements of the list correspond to the %s' % meme_object['formatting']
-    prompt += ' Remember to reply only with a python list.'
+    prompt += ' Remember to reply only with a python list of exactly %s elements.' % meme_object['box_count']
     return prompt
 
 def call_llm(prompt, llm_model):
