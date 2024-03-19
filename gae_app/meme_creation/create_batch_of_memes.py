@@ -59,7 +59,7 @@ def create_batch_of_memes(recipe):
             llm_model = random.choice(recipe['llm'])
             llm_response = llm_service.call_llm(prompt, llm_model)
             try:
-                caption_list_first_meme = eval(llm_response['choices'][0]['message']['content'])
+                caption_list_first_meme = eval(llm_response)
                 print(caption_list_first_meme)
                 if len(caption_list_first_meme) != meme_object['box_count']:
                     print('Meme LLM response caption count did not match the intended numnber of captions for this meme.')

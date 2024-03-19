@@ -1,11 +1,16 @@
 import requests
 import api_secrets
+from openai import OpenAI
 
 _NEETS_API_URL = "https://api.neets.ai/v1/chat/completions"
 _MODELS = {
     'mistral': 'mistralai/Mixtral-8X7B-Instruct-v0.1',
     'neets.ai': 'Neets-7B',
+    'chatgpt': 'gpt-3.5-turbo'
 }
+
+openai_client = OpenAI(api_key=api_secrets.OPENAI_KEY)
+
 
 def prepare_prompt(headline, article_url_content, meme_object, personality):
     prompt = 'You are a meme-generating AI assistant'
@@ -19,6 +24,26 @@ def prepare_prompt(headline, article_url_content, meme_object, personality):
     return prompt
 
 def call_llm(prompt, llm_model):
+    if llm_model in {'mistral', 'neets.ai'}:
+        return call_neets_llm(prompt, llm_model)
+    elif llm_model in {'chatgpt'}:
+        return call_openai_llm(prompt, llm_model)
+
+def call_openai_llm(prompt, llm_model):
+    response = openai_client.chat.completions.create(
+    model=_MODELS[llm_model],
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant with deep knowledge about internet memes."},
+        # maybe later try 1-shot, 3-shot prompting here,
+        {"role": "user", "content": "Write sample captions for the Distracted Boyfriend meme as a python list?"},
+        {"role": "assistant", "content": "[\"GOOG stock\", \"You\", \"NVIDIA stock going way up.\"]"},
+        {"role": "user", "content": prompt}
+        ]
+    )
+    text_content = response.choices[0].message.content
+    return text_content
+
+def call_neets_llm(prompt, llm_model):
   payload = {
       "messages": [
           {
@@ -39,6 +64,6 @@ def call_llm(prompt, llm_model):
     response = requests.post(_NEETS_API_URL, json=payload, headers=headers)
     response.raise_for_status()
     data = response.json()
-    return(data)
+    return(data['choices'][0]['message']['content'])
   except requests.exceptions.RequestException as e:
     print(f"An error occurred: {e}")
