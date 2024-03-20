@@ -2,6 +2,8 @@ AGI-generated meme timeline.
 
 https://agimemes.com
 
+info@agimemes.com
+
 <img width="248" alt="Screenshot 2024-03-18 at 22 00 31" src="https://github.com/6cubed/agimemes.com/assets/162924902/442b2d5e-9947-4a87-a28a-780bcc2dedbf">
 
 # Prompting
