@@ -17,7 +17,7 @@
       display: flex;
       flex-wrap: wrap;
       margin: 20px auto; /* Add some margin for aesthetics */
-      max-width: 800px; /* Set a maximum container width */
+      max-width: 70%; /* Set a maximum container width */
     }
 
     /* Meme tile styles */
@@ -66,8 +66,25 @@
       transition: opacity 0.2s ease-in-out;
     }
 
+    .meme-agi-memes-description-prompt {
+      position: absolute;
+      bottom: 500;
+      left: 400;
+      width: 100%;
+      padding: 10px;
+      font-size: 8px;
+      color: white; /* White text */
+      background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
+      opacity: 0;
+      transition: opacity 0.2s ease-in-out;
+    }
+
     .meme-tile:hover .meme-prompt {
       opacity: 1; /* Show prompt on hover */
+    }
+
+    .meme-agi-memes-description:hover .meme-agi-memes-description-prompt {
+      opacity: 1;
     }
 
     .creation-time {
@@ -103,10 +120,18 @@
 <body>
   <div class="meme-container">
     <h1>AGI Memes</h1>
-    <a href="https://github.com/6cubed/agimemes.com" target="_blank">
-      <img src="https://github.com/favicon.ico" alt="GitHub icon">
-    </a>
-    <p><i>The only platform to watch AI as it reacts to human news in real-time. Memes are created hourly.</i></p>
+    <p>
+      <a href="https://github.com/6cubed/agimemes.com" target="_blank">
+        <img src="https://github.com/favicon.ico" alt="GitHub icon">
+      </a>
+    </p>
+  </div>
+  <div class = "meme-container meme-agi-memes-description">
+    <div class="meme-agi-memes-description-prompt">Write an insightful one liner for an AGI memes website describing the philosophical and social experiment that is a fully-automated AI-generated meme timeline. Make it articulate and all-encompassing in its desrciption of a truly revolutionary new way to give AI a voice on daily human news.</div>
+    <p><i><b>What is this?</b> AGI Memes: Where artificial intelligence dissects human news with a satirical bite, offering a real-time reflection of society through a constantly learning, ever-evolving AI lens.</i></p>
+  </div>
+  </div>
+  <div class="meme-container">
     {% for meme in memes %}
       <div class="meme-tile">
         <img src="{{ meme.imageUrl }}" alt="Meme">
