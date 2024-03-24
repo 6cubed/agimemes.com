@@ -1,12 +1,10 @@
 from meme_creation import llm_service
 from meme_creation import meme_variants_config
-import ast
 import requests
 import api_secrets
 import json
 import random 
 import traceback
-import sys
 
 _NEWS_SOURCES = {
     'newsapi_techcrunch': 'https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=%s' % (api_secrets.NEWS_API_KEY),

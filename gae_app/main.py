@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request
 import os
 import random
 import firebase_admin
@@ -25,7 +25,10 @@ def get_recent_memes():
   docs = query.get()
   memes_data = []
   for doc in docs:
-      memes_data.append(doc.to_dict())
+      meme_id = doc.id
+      meme_doc = doc.to_dict()
+      meme_doc['id'] = meme_id
+      memes_data.append(meme_doc)
   return memes_data
 
 
@@ -44,6 +47,23 @@ def meme_creation():
       }
       memes_ref.add(meme_doc)
     return 'creating memes'
+
+@app.route('/vote/<meme_id>', methods=['POST'])
+def vote(meme_id):
+    is_funny = request.form.get('vote')  # Access 'vote' value from form
+
+    if is_funny == 'yes':
+        is_funny = True
+    elif is_funny == 'no':
+        is_funny = False
+    else:
+        return jsonify({'error': 'Invalid vote'}), 400  # Handle invalid vote
+
+    # Update the meme document with the user's vote
+    db.collection('memes').document(meme_id).update({'isFunny': is_funny})
+
+    return jsonify({'success': True})
+
 
 @app.route('/')
 def index():
