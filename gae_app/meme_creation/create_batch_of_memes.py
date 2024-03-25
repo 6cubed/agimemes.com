@@ -55,9 +55,9 @@ def create_batch_of_memes(recipe):
     personality = recipe['personality']
 
     captioned_meme_urls = []
-    for headline, article_summary in articles.items():
+    for _, article_summary in articles.items():
         for meme_object in random.sample(meme_variants_config.MEME_VARIANTS, 2):  # 2 memes * 10 articles
-            prompt = llm_service.prepare_prompt(headline, article_summary, meme_object, personality)
+            prompt = llm_service.prepare_prompt(article_summary, meme_object, personality)
             llm_model = random.choice(recipe['llm'])
             llm_response = llm_service.call_llm(prompt, llm_model)
             try:
@@ -71,7 +71,7 @@ def create_batch_of_memes(recipe):
                     api_secrets.IMGFLIP_USERNAME, 
                     api_secrets.IMGFLIP_PASSWORD, 
                     *caption_list_first_meme)
-                captioned_meme_urls.append((captioned_meme_url, prompt, llm_model))
+                captioned_meme_urls.append((captioned_meme_url, prompt, llm_model, caption_list_first_meme))
                 print('Meme successfully created')
             except Exception:
                 print(traceback.format_exc())

@@ -129,23 +129,49 @@
     <p><i><b>What is this?</b> AGI Memes: Where artificial intelligence dissects human news with a satirical bite, offering a real-time reflection of society through a constantly learning, ever-evolving AI lens.</i></p>
   </div>
   </div>
+
   <div class="meme-container">
     {% for meme in memes %}
       <div class="meme-tile">
-        <div class="meme-badge">{{ meme.llmModel }}</div>
-        <form action="/vote/{{ meme.id }}" method="POST">
-          <label for="is_funny_yes">Is it Funny?</label>
-          <input type="radio" id="is_funny_yes" name="vote" value="yes"> Yes
-          <label for="is_funny_no">Not Funny</label>
-          <input type="radio" id="is_funny_no" name="vote" value="no"> No
-          <button type="submit">Vote</button>
-      </form>
+        <div>{{ meme.llmModel }}</div>
+        <div class="vote-buttons">
+          <button class="vote-button vote-button-yes" data-vote="yes" data-meme-id="{{ meme.id }}">Yes</button>
+          <button class="vote-button vote-button-no" data-vote="no" data-meme-id="{{ meme.id }}">No</button>
+        </div>
         <img src="{{ meme.imageUrl }}" alt="Meme">
         <div class="meme-prompt">
           {{ meme.prompt }}<br>
           <span class="creation-time">Created: {{ meme.creationTime.strftime("%Y-%m-%d %H:%M:%S") }}</span>
-        </div>
-      </div>
+        </div>      </div>
     {% endfor %}
   </div>
+  
+  <script>
+    const voteButtons = document.querySelectorAll('.vote-button');
+  
+    voteButtons.forEach(button => {
+      button.addEventListener('click', function(event) {
+        event.preventDefault();
+  
+        const voteValue = this.dataset.vote;
+        const memeId = this.dataset.memeId;
+  
+        // Perform AJAX/fetch request to submit vote
+        fetch(`/vote/${memeId}`, {
+          method: 'POST',
+          headers: {
+          'Content-Type': 'application/json'  // Added header
+          },
+          body: JSON.stringify({ vote: voteValue })
+        })
+          .then(response => {
+            // Handle response (e.g., display success message or update UI)
+          })
+          .catch(error => {
+            // Handle errors
+          });
+      });
+    });
+  </script>
 </body>
+</html>

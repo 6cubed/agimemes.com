@@ -1,5 +1,4 @@
 from flask import Flask, render_template, jsonify, request
-import os
 import random
 import firebase_admin
 from firebase_admin import credentials
@@ -10,6 +9,7 @@ import time
 from cachetools import cached
 from cachetools import TTLCache
 import datetime
+import json
 
 cred = credentials.Certificate('./serviceaccount.json')
 firebase_admin.initialize_app(cred)
@@ -38,29 +38,38 @@ def meme_creation():
     meme_batch = create_batch_of_memes.create_batch_of_memes(meme_recipe)
     memes_ref = db.collection('memes')
 
-    for meme, prompt, llm_model in meme_batch:
+    for meme_url, prompt, llm_model, captions in meme_batch:
       meme_doc = {
-        'imageUrl': meme,
-        'prompt': prompt,
+        'imageUrl': meme_url,
         'creationTime': datetime.datetime.utcnow(),
         'llmModel': llm_model,
+        # Later we will use these prompt, caption values along with the isFunny target to fine-tune a model.
+        'prompt': prompt, 
+        'captions': captions,
       }
       memes_ref.add(meme_doc)
     return 'creating memes'
 
+
 @app.route('/vote/<meme_id>', methods=['POST'])
 def vote(meme_id):
-    is_funny = request.form.get('vote')  # Access 'vote' value from form
+    # Access vote data from JSON request body
+    try:
+        data = request.get_json()
+        vote_value = data.get('vote')
+    except json.JSONDecodeError:
+        return jsonify({'error': 'Invalid JSON data'}), 400
 
-    if is_funny == 'yes':
-        is_funny = True
-    elif is_funny == 'no':
-        is_funny = False
-    else:
-        return jsonify({'error': 'Invalid vote'}), 400  # Handle invalid vote
+    if vote_value not in ('yes', 'no'):
+        return jsonify({'error': 'Invalid vote'}), 400
+
+    is_funny = vote_value == 'yes'  # Convert 'yes' to True, 'no' to False
 
     # Update the meme document with the user's vote
-    db.collection('memes').document(meme_id).update({'isFunny': is_funny})
+    try:
+        db.collection('memes').document(meme_id).update({'isFunny': is_funny})
+    except Exception as e:  # Catch broader exceptions for database errors
+        return jsonify({'error': 'Database error'}), 500
 
     return jsonify({'success': True})
 

@@ -12,13 +12,13 @@ _MODELS = {
 openai_client = OpenAI(api_key=api_secrets.OPENAI_KEY)
 
 
-def prepare_prompt(headline, article_url_content, meme_object, personality):
+def prepare_prompt(article_url_content, meme_object, personality):
     prompt = 'You are a meme-generating AI assistant'
     if personality:
         prompt += ' with the personality of a %s' % personality
     prompt += ' You will be tasked with creating a funny and creative caption for the "%s" meme.' % meme_object['title']
     prompt += ' Let me explain what kind of captions make this meme funny. %s' % meme_object['explanation']
-    prompt += ' You are given the following news story: "%s" and the following article content: "%s".' % (headline, article_url_content)
+    prompt += ' You are given the following news story: "%s".' % (article_url_content)
     prompt += ' Write the meme caption(s). The format of your response should be a single python list ONLY. The elements of the list correspond to the %s' % meme_object['formatting']
     prompt += ' Remember to reply only with a python list of exactly %s elements.' % meme_object['box_count']
     return prompt
