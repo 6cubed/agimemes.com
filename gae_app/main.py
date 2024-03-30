@@ -38,10 +38,11 @@ def meme_creation():
     meme_batch = create_batch_of_memes.create_batch_of_memes(meme_recipe)
     memes_ref = db.collection('memes')
 
-    for meme_url, prompt, llm_model, captions in meme_batch:
+    for meme_url, prompt, llm_model, captions, url in meme_batch:
       meme_doc = {
         'imageUrl': meme_url,
         'creationTime': datetime.datetime.utcnow(),
+        'contextUrl': url,
         'llmModel': llm_model,
         # Later we will use these prompt, caption values along with the isFunny target to fine-tune a model.
         'prompt': prompt, 

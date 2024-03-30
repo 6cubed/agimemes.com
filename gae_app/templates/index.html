@@ -142,7 +142,9 @@
         <div class="meme-prompt">
           {{ meme.prompt }}<br>
           <span class="creation-time">Created: {{ meme.creationTime.strftime("%Y-%m-%d %H:%M:%S") }}</span>
-        </div>      </div>
+        </div>    
+        <a href="{{meme.contextUrl}}" target="_blank">Context: {{ meme.contextUrl}} </a>  
+      </div>
     {% endfor %}
   </div>
   
