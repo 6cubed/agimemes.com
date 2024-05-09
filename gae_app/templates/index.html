@@ -30,7 +30,8 @@
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       position: relative;
       /* Set a fixed height for the meme card */
-      height: 250px; /* Adjust as needed */
+      height: 350px; /* Adjust as needed */
+      cursor: pointer;  /* Add cursor pointer for hover effect */
     }
 
     .meme-card img {
@@ -65,12 +66,13 @@
 <body>
   <div class="meme-board">
     {% for meme in memes %}
-    <div class="meme-card">
+    <a href="/memes/{{ meme.id }}">  <div class="meme-card">
       <img src="{{ meme.imageUrl }}" alt="Meme">
       <div class="meme-info">
         <span>{{ meme.caption }}</span>
       </div>
     </div>
+    </a>
     {% endfor %}
   </div>
 </body>

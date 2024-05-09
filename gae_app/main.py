@@ -5,7 +5,6 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 from meme_creation import create_batch_of_memes
 from meme_creation import creation_recipe_configs
-import time
 from cachetools import cached
 from cachetools import TTLCache
 import datetime
@@ -89,6 +88,19 @@ def admin():
     'admin_index.html', 
     memes=memes)
 
+@app.route('/memes/<meme_id>')
+def meme_detail(meme_id):
+  # Fetch meme from Firestore by ID
+  doc = db.collection('memes').document(meme_id).get()
+
+  if doc.exists:
+    meme = doc.to_dict()
+    # Return the meme data and render the detail template (adjust as needed)
+    return render_template('meme_detail.html', meme=meme)
+  else:
+    # Handle meme not found case (e.g., return a 404 error)
+    return 'Meme not found', 404
+    
 
 if __name__ == '__main__':
     app.run(debug=True)

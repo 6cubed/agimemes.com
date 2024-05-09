@@ -9,7 +9,6 @@ import traceback
 _NEWS_SOURCES = {
     'newsapi_techcrunch': 'https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=%s' % (api_secrets.NEWS_API_KEY),
     'newsapi_cnn': 'https://newsapi.org/v2/top-headlines?sources=cnn&apiKey=%s' % (api_secrets.NEWS_API_KEY),
-    'newsapi_rte': 'https://newsapi.org/v2/top-headlines?sources=rte&apiKey=%s' % (api_secrets.NEWS_API_KEY),
     'newsapi_biuk': 'https://newsapi.org/v2/top-headlines?sources=business-insider-uk&apiKey=%s' % (api_secrets.NEWS_API_KEY),
     'newsapi_wsj': 'https://newsapi.org/v2/top-headlines?sources=the-wall-street-journal&apiKey=%s' % (api_secrets.NEWS_API_KEY),
     'newsapi_ai': 'https://newsapi.org/v2/everything?q=Artificial Intelligence&from=2024-02-18&sortBy=publishedAt&apiKey=%s' % (api_secrets.NEWS_API_KEY),
