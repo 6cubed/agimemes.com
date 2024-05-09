@@ -11,8 +11,14 @@ _MODELS = {
 
 openai_client = OpenAI(api_key=api_secrets.OPENAI_KEY)
 
+def prepare_meme_is_funny_prompt(article_summary, meme_object, meme_captions):
+    new_prompt = 'You are an AI assistant which decides if a meme is going to be perceived as funny or not.'
+    new_prompt += 'This is the news article for context: %s.' % article_summary
+    new_prompt += 'For further context, the meme which was used was %s and this meme is typically humorous for the following reasons %s' % (meme_object['title'], meme_object['explanation'])
+    new_prompt += 'The following meme captions are proposed as being funny by a third-party: %s. Is it truly funny? Answer in under 200 characters.' % meme_captions
+    return new_prompt
 
-def prepare_prompt(article_url_content, meme_object, personality):
+def prepare_meme_generation_prompt(article_url_content, meme_object, personality):
     prompt = 'You are a meme-generating AI assistant'
     if personality:
         prompt += ' with the personality of a %s' % personality
@@ -20,30 +26,31 @@ def prepare_prompt(article_url_content, meme_object, personality):
     prompt += ' Let me explain what kind of captions make this meme funny. %s' % meme_object['explanation']
     prompt += ' You are given the following news story: "%s".' % (article_url_content)
     prompt += ' Write the meme caption(s). The format of your response should be a single python list ONLY. The elements of the list correspond to the %s' % meme_object['formatting']
-    prompt += ' Remember to reply only with a python list of exactly %s elements.' % meme_object['box_count']
+    prompt += ' Remember to reply only with a python list of exactly %s elements and using no more than 100 characters in total.' % meme_object['box_count']
     return prompt
 
 def call_llm(prompt, llm_model):
     if llm_model in {'mistral', 'neets.ai'}:
         return call_neets_llm(prompt, llm_model)
     elif llm_model in {'chatgpt'}:
-        return call_openai_llm(prompt, llm_model)
+        return call_openai_llm(prompt, llm_model=llm_model)
 
-def call_openai_llm(prompt, llm_model):
+def call_openai_llm(prompt, llm_model='chatgpt', max_tokens=50):
     response = openai_client.chat.completions.create(
-    model=_MODELS[llm_model],
-    messages=[
-        {"role": "system", "content": "You are a helpful assistant with deep knowledge about internet memes."},
-        # maybe later try 1-shot, 3-shot prompting here,
-        {"role": "user", "content": "Write sample captions for the Distracted Boyfriend meme as a python list?"},
-        {"role": "assistant", "content": "[\"GOOG stock\", \"You\", \"NVIDIA stock going way up.\"]"},
-        {"role": "user", "content": prompt}
-        ]
+        model=_MODELS[llm_model],
+        max_tokens=max_tokens,
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant with deep knowledge about internet memes."},
+            # maybe later try 1-shot, 3-shot prompting here,
+            {"role": "user", "content": "Write sample captions for the Distracted Boyfriend meme as a python list?"},
+            {"role": "assistant", "content": "[\"GOOG stock\", \"You\", \"NVIDIA stock going way up.\"]"},
+            {"role": "user", "content": prompt}
+            ]
     )
     text_content = response.choices[0].message.content
     return text_content
 
-def call_neets_llm(prompt, llm_model):
+def call_neets_llm(prompt, llm_model='neets.ai'):
   payload = {
       "messages": [
           {

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meme Board</title>
@@ -50,15 +50,16 @@
         text-decoration: none;
         }
     </style>
-    </head>
-    <body>
+</head>
+<body>
     <div class="meme-container">
         <img src="{{ meme.imageUrl }}" alt="Meme" class="meme-image">
         <div class="meme-info">
         <span>
             <span class="material-icons sharp"><a href="{{ meme.contextUrl }}">{{meme.contextUrl}}</a></span><br />
+            <span class="is-funny">{{ meme.isFunnyComment}}</span>
         </span>
         </div>
     </div>
-    </body>
+</body>
 </html>

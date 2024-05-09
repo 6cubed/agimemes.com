@@ -8,16 +8,20 @@ import traceback
 
 _NEWS_SOURCES = {
     #'newsapi_techcrunch': 'https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=%s' % (api_secrets.NEWS_API_KEY),
-    'newsapi_ch': 'https://newsapi.org/v2/top-headlines?country=ch&apiKey=%s' % (api_secrets.NEWS_API_KEY),
-    'newsapi_de': 'https://newsapi.org/v2/top-headlines?country=ch&apiKey=%s' % (api_secrets.NEWS_API_KEY),
-    'newsapi_us': 'https://newsapi.org/v2/top-headlines?country=us&apiKey=%s' % (api_secrets.NEWS_API_KEY),
-    'newsapi_uk': 'https://newsapi.org/v2/top-headlines?country=uk&apiKey=%s' % (api_secrets.NEWS_API_KEY),
+    #'newsapi_switzerland': 'https://newsapi.org/v2/everything?q=switzerland&apiKey=%s' % (api_secrets.NEWS_API_KEY),
+    'newsapi_ai': 'https://newsapi.org/v2/everything?q=ai&apiKey=%s' % (api_secrets.NEWS_API_KEY),
     #'newsapi_cnn': 'https://newsapi.org/v2/top-headlines?sources=cnn&apiKey=%s' % (api_secrets.NEWS_API_KEY),
     #'newsapi_biuk': 'https://newsapi.org/v2/top-headlines?sources=business-insider-uk&apiKey=%s' % (api_secrets.NEWS_API_KEY),
     #'newsapi_wsj': 'https://newsapi.org/v2/top-headlines?sources=the-wall-street-journal&apiKey=%s' % (api_secrets.NEWS_API_KEY),
     #'newsapi_ai': 'https://newsapi.org/v2/everything?q=Artificial Intelligence&from=2024-02-18&sortBy=publishedAt&apiKey=%s' % (api_secrets.NEWS_API_KEY),
     #'newsapi_business_us': 'https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=%s' % (api_secrets.NEWS_API_KEY)
 }
+
+def verify_if_meme_is_funny(article_summary, meme_object, meme_captions):
+    print(meme_object)
+    meme_is_funny_prompt = llm_service.prepare_meme_is_funny_prompt(article_summary, meme_object, meme_captions)
+    answer = llm_service.call_openai_llm(meme_is_funny_prompt)
+    return answer
 
 def caption_meme(template_id, username, password, text0, text1=None, text2=None, text3=None, text4=None, font=None):
     url = "https://api.imgflip.com/caption_image"
@@ -61,12 +65,14 @@ def create_batch_of_memes(recipe):
     captioned_meme_urls = []
     for article_url, article_summary in articles.items():
         for meme_object in random.sample(meme_variants_config.MEME_VARIANTS, 2):  # 2 memes * 10 articles
-            prompt = llm_service.prepare_prompt(article_summary, meme_object, personality)
+            prompt = llm_service.prepare_meme_generation_prompt(article_summary, meme_object, personality)
             llm_model = random.choice(recipe['llm'])
             llm_response = llm_service.call_llm(prompt, llm_model)
             try:
                 caption_list_first_meme = eval(llm_response)
-                print(caption_list_first_meme)
+                # Double-check if this is funny with an LLM-rater.
+                is_meme_funny_comment = verify_if_meme_is_funny(article_summary, meme_object, caption_list_first_meme)
+
                 if len(caption_list_first_meme) != meme_object['box_count']:
                     print('Meme LLM response caption count did not match the intended numnber of captions for this meme.')
                     continue
@@ -75,7 +81,8 @@ def create_batch_of_memes(recipe):
                     api_secrets.IMGFLIP_USERNAME, 
                     api_secrets.IMGFLIP_PASSWORD, 
                     *caption_list_first_meme)
-                captioned_meme_urls.append((captioned_meme_url, prompt, llm_model, caption_list_first_meme, article_url))
+                captioned_meme_urls.append(
+                    (captioned_meme_url, prompt, llm_model, caption_list_first_meme, article_url, is_meme_funny_comment))
                 print('Meme successfully created')
             except Exception:
                 print(traceback.format_exc())
