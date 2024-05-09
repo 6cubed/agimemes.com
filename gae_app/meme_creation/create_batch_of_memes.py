@@ -7,12 +7,16 @@ import random
 import traceback
 
 _NEWS_SOURCES = {
-    'newsapi_techcrunch': 'https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=%s' % (api_secrets.NEWS_API_KEY),
-    'newsapi_cnn': 'https://newsapi.org/v2/top-headlines?sources=cnn&apiKey=%s' % (api_secrets.NEWS_API_KEY),
-    'newsapi_biuk': 'https://newsapi.org/v2/top-headlines?sources=business-insider-uk&apiKey=%s' % (api_secrets.NEWS_API_KEY),
-    'newsapi_wsj': 'https://newsapi.org/v2/top-headlines?sources=the-wall-street-journal&apiKey=%s' % (api_secrets.NEWS_API_KEY),
-    'newsapi_ai': 'https://newsapi.org/v2/everything?q=Artificial Intelligence&from=2024-02-18&sortBy=publishedAt&apiKey=%s' % (api_secrets.NEWS_API_KEY),
-    'newsapi_business_us': 'https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=%s' % (api_secrets.NEWS_API_KEY)
+    #'newsapi_techcrunch': 'https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=%s' % (api_secrets.NEWS_API_KEY),
+    'newsapi_ch': 'https://newsapi.org/v2/top-headlines?country=ch&apiKey=%s' % (api_secrets.NEWS_API_KEY),
+    'newsapi_de': 'https://newsapi.org/v2/top-headlines?country=ch&apiKey=%s' % (api_secrets.NEWS_API_KEY),
+    'newsapi_us': 'https://newsapi.org/v2/top-headlines?country=us&apiKey=%s' % (api_secrets.NEWS_API_KEY),
+    'newsapi_uk': 'https://newsapi.org/v2/top-headlines?country=uk&apiKey=%s' % (api_secrets.NEWS_API_KEY),
+    #'newsapi_cnn': 'https://newsapi.org/v2/top-headlines?sources=cnn&apiKey=%s' % (api_secrets.NEWS_API_KEY),
+    #'newsapi_biuk': 'https://newsapi.org/v2/top-headlines?sources=business-insider-uk&apiKey=%s' % (api_secrets.NEWS_API_KEY),
+    #'newsapi_wsj': 'https://newsapi.org/v2/top-headlines?sources=the-wall-street-journal&apiKey=%s' % (api_secrets.NEWS_API_KEY),
+    #'newsapi_ai': 'https://newsapi.org/v2/everything?q=Artificial Intelligence&from=2024-02-18&sortBy=publishedAt&apiKey=%s' % (api_secrets.NEWS_API_KEY),
+    #'newsapi_business_us': 'https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=%s' % (api_secrets.NEWS_API_KEY)
 }
 
 def caption_meme(template_id, username, password, text0, text1=None, text2=None, text3=None, text4=None, font=None):
@@ -41,7 +45,7 @@ def caption_meme(template_id, username, password, text0, text1=None, text2=None,
         return "Failed to connect to the API."
 
 def create_batch_of_memes(recipe):
-    news_source_recipe = random.choice(recipe['news_source'])
+    news_source_recipe = random.choice(recipe.get('news_source') or list(_NEWS_SOURCES))
     news_source_api = _NEWS_SOURCES[news_source_recipe]
     article_response = requests.get(news_source_api)
     article_objects = json.loads(article_response.content)['articles']
