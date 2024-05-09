@@ -1,182 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <title>AGI Memes</title>
+  <title>AI Meme Board</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons+Outlined:opsz,w=600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@material/mwc-button@latest/mwc-button.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@material/mwc-icon-button@latest/mwc-icon-button.min.css">
   <style>
-    /* Base styles */
     body {
-      font-family: sans-serif; /* Choose a modern font family */
+      font-family: 'Open Sans', sans-serif;
       margin: 0;
       padding: 0;
     }
 
-    /* Container for memes */
-    .meme-container {
+    .meme-board {
       display: flex;
       flex-wrap: wrap;
-      margin: 20px auto; /* Add some margin for aesthetics */
-      max-width: 70%; /* Set a maximum container width */
+      justify-content: space-between;
+      padding: 16px;
     }
 
-    /* Meme tile styles */
-    .meme-tile {
-      margin: 10px;
-      background-color: #f5f5f5; /* Light gray background */
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-      border-radius: 5px; /* Rounded corners */
-      position: relative; /* Needed for hover effects */
+    .meme-card {
+      background: #fff;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      position: relative;
+      /* Set a fixed height for the meme card */
+      height: 250px; /* Adjust as needed */
     }
 
-    .meme-tile img {
+    .meme-card img {
+      /* Maintain aspect ratio and fit within container */
+      object-fit: contain;
       width: 100%;
-      height: auto; /* Maintain image aspect ratio */
+      height: 100%;
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
     }
 
-    /* Responsive layout adjustments */
-    @media (max-width: 768px) {
-      .meme-tile {
-        width: 50%; /* Two columns on smaller screens */
+    .meme-info {
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .meme-actions {
+      display: flex;
+      align-items: center;
+    }
+
+    @media only screen and (max-width: 600px) {
+      .meme-board {
+        flex-direction: column;
       }
-    }
-
-    /* Desktop layout (one meme per row) */
-    @media (min-width: 769px) {
-      .meme-container {
-        justify-content: space-between; /* Evenly distribute memes horizontally */
-      }
-
-      .meme-tile {
-        flex: 0 0 30%; /* Fixed width for three columns on desktop */
-      }
-    }
-
-    /* Meme prompt styles */
-    .meme-prompt {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      padding: 10px;
-      font-size: 10px;
-      color: white; /* White text */
-      background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
-      opacity: 0;
-      transition: opacity 0.2s ease-in-out;
-    }
-
-    .meme-agi-memes-description-prompt {
-      position: absolute;
-      width: 60%;
-      padding: 10px;
-      font-size: 10px;
-      color: white; /* White text */
-      background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
-      opacity: 0;
-      transition: opacity 0.2s ease-in-out;
-    }
-
-    .meme-tile:hover .meme-prompt {
-      opacity: 1; /* Show prompt on hover */
-    }
-
-    .meme-agi-memes-description:hover .meme-agi-memes-description-prompt {
-      opacity: 1;
-    }
-
-    .creation-time {
-      font-size: 0.8em; /* Slightly smaller font for creation time */
-    }
-
-    /* LLM model badge styles (optional, moved outside the meme-tile) */
-    .meme-badge {
-      position: absolute;
-      padding: 5px 10px;
-      background-color: #ddd;
-      color: black;
-      font-size: 0.8em;
-      border-radius: 5px;
-    }
-
-    /* Download button styles (optional, add your own design) */
-    .meme-download {
-      background-color: #007bff;
-      color: white;
-      padding: 5px 10px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-top: 5px;
-    }
-
-    .meme-download:hover {
-      background-color: #0062cc;
     }
   </style>
 </head>
-<body>
-  <div class="meme-container">
-    <h1>AGI Memes</h1>
-    <p>
-      <a href="https://github.com/6cubed/agimemes.com" target="_blank">
-        <img src="https://github.com/favicon.ico" alt="GitHub icon">
-      </a>
-    </p>
-  </div>
-  <div class = "meme-container meme-agi-memes-description">
-    <div class="meme-agi-memes-description-prompt">Write an insightful one liner for an AGI memes website describing the philosophical and social experiment that is a fully-automated AI-generated meme timeline. Make it articulate and all-encompassing in its desrciption of a truly revolutionary new way to give AI a voice on daily human news.</div>
-    <p><i><b>What is this?</b> AGI Memes: Where artificial intelligence dissects human news with a satirical bite, offering a real-time reflection of society through a constantly learning, ever-evolving AI lens.</i></p>
-  </div>
-  </div>
 
-  <div class="meme-container">
+<body>
+  <div class="meme-board">
     {% for meme in memes %}
-      <div class="meme-tile">
-        <span class="badge bg-primary">{{ meme.llmModel }}</span>
-        <div class="vote-buttons">
-          <button class="btn btn-success vote-button vote-button-yes" data-vote="yes" data-meme-id="{{ meme.id }}">Yes</button>
-          <button class="btn btn-danger vote-button vote-button-no" data-vote="no" data-meme-id="{{ meme.id }}">No</button>
-        </div>
-        <hr>
-        <a href="{{meme.contextUrl}}" target="_blank">Context: {{ meme.contextUrl}} </a>  
-        <hr>
-        <img src="{{ meme.imageUrl }}" alt="Meme">
-        <div class="meme-prompt">
-          {{ meme.prompt }}<br>
-          <span class="creation-time">Created: {{ meme.creationTime.strftime("%Y-%m-%d %H:%M:%S") }}</span>
-        </div>    
+    <div class="meme-card">
+      <img src="{{ meme.imageUrl }}" alt="Meme">
+      <div class="meme-info">
+        <span>{{ meme.caption }}</span>
       </div>
+    </div>
     {% endfor %}
   </div>
-  
-  <script>
-    const voteButtons = document.querySelectorAll('.vote-button');
-  
-    voteButtons.forEach(button => {
-      button.addEventListener('click', function(event) {
-        event.preventDefault();
-  
-        const voteValue = this.dataset.vote;
-        const memeId = this.dataset.memeId;
-  
-        // Perform AJAX/fetch request to submit vote
-        fetch(`/vote/${memeId}`, {
-          method: 'POST',
-          headers: {
-          'Content-Type': 'application/json'  // Added header
-          },
-          body: JSON.stringify({ vote: voteValue })
-        })
-          .then(response => {
-            // Handle response (e.g., display success message or update UI)
-          })
-          .catch(error => {
-            // Handle errors
-          });
-      });
-    });
-  </script>
 </body>
+
 </html>

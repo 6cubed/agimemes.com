@@ -82,6 +82,13 @@ def index():
     'index.html', 
     memes=memes)
 
+@app.route('/admin')
+def admin():
+  memes = get_recent_memes()
+  return render_template(
+    'admin_index.html', 
+    memes=memes)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
