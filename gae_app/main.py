@@ -61,10 +61,10 @@ def vote(meme_id):
     except json.JSONDecodeError:
         return jsonify({'error': 'Invalid JSON data'}), 400
 
-    if vote_value not in ('yes', 'no'):
+    if vote_value not in ('up', 'down'):
         return jsonify({'error': 'Invalid vote'}), 400
 
-    is_funny = vote_value == 'yes'  # Convert 'yes' to True, 'no' to False
+    is_funny = vote_value == 'up'  # Convert 'up' to True, 'down' to False - do something fancier later
 
     # Update the meme document with the user's vote
     try:
@@ -96,6 +96,8 @@ def meme_detail(meme_id):
 
   if doc.exists:
     meme = doc.to_dict()
+    meme_id = doc.id
+    meme['id'] = meme_id
     # Return the meme data and render the detail template (adjust as needed)
     return render_template('meme_detail.html', meme=meme)
   else:

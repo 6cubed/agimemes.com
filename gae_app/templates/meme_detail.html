@@ -9,45 +9,64 @@
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <style>
         body {
-        font-family: 'Roboto', sans-serif;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-        background-color: #f5f5f5;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #f5f5f5;
         }
 
         .meme-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 24px;
-        max-width: 700px;
-        margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px;
+            max-width: 700px;
+            margin: 0 auto;
         }
 
         .meme-image {
-        width: 100%;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .meme-info {
-        margin-top: 16px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        color: #757575;
+            margin-top: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #757575;
+            width: 100%;
         }
 
         .meme-info .material-icons {
-        font-size: 20px;
-        cursor: pointer;
+            font-size: 20px;
+            cursor: pointer;
         }
 
         .meme-info a {
-        color: inherit;
-        text-decoration: none;
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .vote-buttons {
+            display: flex;
+            align-items: center;
+        }
+
+        .vote-button {
+            border: none;
+            background-color: transparent;
+            cursor: pointer;
+            font-size: 20px;
+            margin: 0 10px;
+        }
+
+        .vote-count {
+            font-size: 16px;
+            margin: 0 5px;
         }
     </style>
 </head>
@@ -55,11 +74,58 @@
     <div class="meme-container">
         <img src="{{ meme.imageUrl }}" alt="Meme" class="meme-image">
         <div class="meme-info">
-        <span>
-            <span class="material-icons sharp"><a href="{{ meme.contextUrl }}">{{meme.contextUrl}}</a></span><br />
-            <span class="is-funny">{{ meme.isFunnyComment}}</span>
-        </span>
+            <span>
+                <b>Context: </b><a href="{{ meme.contextUrl }}" target="_blank">{{ meme.contextUrl }}</a><br /><br />
+                <b>Community verdict: </b><span class="is-funny-community">{{ meme.isFunny}}</span><br /><br />
+                <b>ChatGPT opinion: </b><span class="is-funny-llm">{{ meme.isFunnyComment }}</span><br /><br />
+                <b>LLM used: </b><span class="llm-used">{{ meme.llmModel }}</span><br /><br />
+                <b>Full prompt used: </b><span class="full-prompt-llm">{{ meme.prompt }}</span><br /><br />
+            </span>
+            <div class="vote-buttons">
+                <button class="vote-button upvote-button" data-vote="up" data-meme-id="{{ meme.id }}">
+                    <span class="material-icons sharp">thumb_up</span>
+                </button>
+                
+                <button class="vote-button downvote-button" data-vote="down" data-meme-id="{{ meme.id }}">
+                    <span class="material-icons sharp">thumb_down</span>
+                </button>
+            </div>
         </div>
     </div>
+
+    <script>
+        document.querySelectorAll('.vote-button').forEach(button => {
+            button.addEventListener('click', function(event) {
+                event.preventDefault();
+                
+                const voteValue = this.dataset.vote; // 'up' or 'down'
+                const memeId = this.dataset.memeId;
+                const upvoteCountElement = document.getElementById(`upvote-count-${memeId}`);
+                const downvoteCountElement = document.getElementById(`downvote-count-${memeId}`);
+
+                // Perform AJAX/fetch request to submit vote
+                fetch(`/vote/${memeId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ vote: voteValue })
+                })
+                .then(response => response.json())  // Assuming API returns JSON
+                .then(data => {
+                    // Update the UI with the new vote counts
+                    if (data.success) {
+                        upvoteCountElement.textContent = data.upvotes;
+                        downvoteCountElement.textContent = data.downvotes;
+                    } else {
+                        console.error('Failed to vote:', data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        });
+    </script>
 </body>
 </html>
