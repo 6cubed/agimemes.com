@@ -7,11 +7,11 @@ import random
 import traceback
 
 _NEWS_SOURCES = {
-    #'newsapi_techcrunch': 'https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=%s' % (api_secrets.NEWS_API_KEY),
-    #'newsapi_switzerland': 'https://newsapi.org/v2/everything?q=switzerland&apiKey=%s' % (api_secrets.NEWS_API_KEY),
-    'newsapi_ai': 'https://newsapi.org/v2/everything?q=ai&apiKey=%s' % (api_secrets.NEWS_API_KEY),
-    'newsapi_tech': 'https://newsapi.org/v2/everything?q=tech&apiKey=%s' % (api_secrets.NEWS_API_KEY),
-    'newsapi_wallstreet': 'https://newsapi.org/v2/everything?q=wallstreet&apiKey=%s' % (api_secrets.NEWS_API_KEY),
+    'newsapi_techcrunch': 'https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=%s' % (api_secrets.NEWS_API_KEY),
+    'newsapi_switzerland': 'https://newsapi.org/v2/everything?q=switzerland&apiKey=%s' % (api_secrets.NEWS_API_KEY),
+    #'newsapi_ai': 'https://newsapi.org/v2/everything?q=ai&apiKey=%s' % (api_secrets.NEWS_API_KEY),
+    #'newsapi_tech': 'https://newsapi.org/v2/everything?q=tech&apiKey=%s' % (api_secrets.NEWS_API_KEY),
+    #'newsapi_wallstreet': 'https://newsapi.org/v2/everything?q=wallstreet&apiKey=%s' % (api_secrets.NEWS_API_KEY),
     #'newsapi_cnn': 'https://newsapi.org/v2/top-headlines?sources=cnn&apiKey=%s' % (api_secrets.NEWS_API_KEY),
     #'newsapi_biuk': 'https://newsapi.org/v2/top-headlines?sources=business-insider-uk&apiKey=%s' % (api_secrets.NEWS_API_KEY),
     #'newsapi_wsj': 'https://newsapi.org/v2/top-headlines?sources=the-wall-street-journal&apiKey=%s' % (api_secrets.NEWS_API_KEY),
