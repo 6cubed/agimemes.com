@@ -7,8 +7,8 @@ import random
 import traceback
 
 _NEWS_SOURCES = {
-    'newsapi_techcrunch': 'https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=%s' % (api_secrets.NEWS_API_KEY),
-    'newsapi_switzerland': 'https://newsapi.org/v2/everything?q=switzerland&apiKey=%s' % (api_secrets.NEWS_API_KEY),
+    'tech': 'https://newsapi.org/v2/everything?sources=techcrunch&sortBy=publishedAt&apiKey=%s' % (api_secrets.NEWS_API_KEY),
+    #'switzerland': 'https://newsapi.org/v2/everything?q=switzerland&apiKey=%s' % (api_secrets.NEWS_API_KEY),
     #'newsapi_ai': 'https://newsapi.org/v2/everything?q=ai&apiKey=%s' % (api_secrets.NEWS_API_KEY),
     #'newsapi_tech': 'https://newsapi.org/v2/everything?q=tech&apiKey=%s' % (api_secrets.NEWS_API_KEY),
     #'newsapi_wallstreet': 'https://newsapi.org/v2/everything?q=wallstreet&apiKey=%s' % (api_secrets.NEWS_API_KEY),
@@ -20,7 +20,6 @@ _NEWS_SOURCES = {
 }
 
 def verify_if_meme_is_funny(article_summary, meme_object, meme_captions):
-    print(meme_object)
     meme_is_funny_prompt = llm_service.prepare_meme_is_funny_prompt(article_summary, meme_object, meme_captions)
     answer = llm_service.call_openai_llm(meme_is_funny_prompt)
     return answer
@@ -56,7 +55,9 @@ def create_batch_of_memes(recipe):
     article_response = requests.get(news_source_api)
     article_objects = json.loads(article_response.content)['articles']
     articles = {}
-    for article_object in article_objects[:5]:
+    recent_articles = article_objects[:100]
+    random_recent_articles = random.shuffle(recent_articles)
+    for article_object in random_recent_articles[:10]:
         title = article_object['title']
         description = article_object['description']
         article_url = article_object['url']

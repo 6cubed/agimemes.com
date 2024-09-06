@@ -17,7 +17,7 @@ db = firestore.client()
 app = Flask(__name__)
 app.debug = True
 
-@cached(cache=TTLCache(maxsize=1024, ttl=3500)) # < 1 hour
+#@cached(cache=TTLCache(maxsize=1024, ttl=3500)) # < 1 hour
 def get_recent_memes():
   memes_ref = db.collection('memes')
   query = memes_ref.order_by('creationTime', direction=firestore.Query.DESCENDING).limit(100)
