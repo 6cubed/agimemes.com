@@ -56,8 +56,8 @@ def create_batch_of_memes(recipe):
     article_objects = json.loads(article_response.content)['articles']
     articles = {}
     recent_articles = article_objects[:100]
-    random_recent_articles = random.shuffle(recent_articles)
-    for article_object in random_recent_articles[:10]:
+    random.shuffle(recent_articles)
+    for article_object in recent_articles[:10]:
         title = article_object['title']
         description = article_object['description']
         article_url = article_object['url']
