@@ -17,7 +17,7 @@ db = firestore.client()
 app = Flask(__name__)
 app.debug = True
 
-#@cached(cache=TTLCache(maxsize=1024, ttl=3500)) # < 1 hour
+@cached(cache=TTLCache(maxsize=1024, ttl=3500)) # < 1 hour
 def get_recent_memes():
   memes_ref = db.collection('memes')
   query = memes_ref.order_by('creationTime', direction=firestore.Query.DESCENDING).limit(100)
@@ -104,6 +104,20 @@ def meme_detail(meme_id):
     # Handle meme not found case (e.g., return a 404 error)
     return 'Meme not found', 404
     
+
+@app.route("/override_caption/<meme_id>", methods=["POST"])
+def override_caption(meme_id):
+    # Implement logic to handle the received caption data (e.g., save it, update database)
+    data = request.get_json()
+    custom_caption = data.get("caption")
+
+    # Example logic (replace with your actual processing)
+    try:
+        db.collection('memes').document(meme_id).update({'overrideCaption': custom_caption})
+    except Exception as e:  # Catch broader exceptions for database errors
+        return jsonify({'error': 'Database error'}), 500
+    return jsonify({'success': True})
+
 
 if __name__ == '__main__':
     app.run(debug=True)

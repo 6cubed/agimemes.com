@@ -91,6 +91,11 @@
                     <span class="material-icons sharp">thumb_down</span>
                 </button>
             </div>
+            <div class="caption-override">
+                <label for="custom_caption">Override Caption:</label>
+                <textarea id="custom_caption" rows="4" cols="50"></textarea>
+                <button type="button" id="submit_caption">Submit</button>
+            </div>
         </div>
     </div>
 
@@ -152,6 +157,26 @@
                     console.error('Error:', error);
                 });
             });
+        });
+        const submitCaptionButton = document.getElementById('submit_caption');
+        submitCaptionButton.addEventListener('click', function() {
+            const customCaption = document.getElementById('custom_caption').value;
+            const memeId = `{{ meme.id }}`; // assuming meme.id is available in your template
+
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/override_caption/" + memeId, true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        console.log("Caption submitted successfully!");
+                        //  Optionally update the UI here if the response indicates success
+                    } else {
+                        console.error("Error submitting caption:", xhr.statusText);
+                    }
+                }
+            };
+            xhr.send(JSON.stringify({ caption: customCaption }));
         });
     </script>
 </body>
